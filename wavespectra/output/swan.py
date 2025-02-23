@@ -25,8 +25,6 @@ def to_swan(self, filename, append=False, id="Created by wavespectra", ntime=Non
     """
     # If grid reshape into site, otherwise ensure there is site dim to iterate over
     dset = self._check_and_stack_dims()
-    ntime = min(ntime or dset.time.size, dset.time.size)
-
     # Ensure time dimension exists
     is_time = attrs.TIMENAME in dset[attrs.SPECNAME].dims
     if not is_time:
@@ -35,6 +33,8 @@ def to_swan(self, filename, append=False, id="Created by wavespectra", ntime=Non
     else:
         times = dset[attrs.TIMENAME].to_index().to_pydatetime()
         times = [f"{t:%Y%m%d.%H%M%S}" for t in times]
+
+    ntime = min(ntime or dset.time.size, dset.time.size)
 
     # Keeping only supported dimensions
     dims_to_keep = {attrs.TIMENAME, attrs.SITENAME, attrs.FREQNAME, attrs.DIRNAME}
